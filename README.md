@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/737a8a63-b8df-486f-84da-72e87f8beaa5)# homework-borg
+# homework-borg
 
 Описание домашнего задания
 ---
@@ -213,11 +213,102 @@ ___
 
 Доступ по SSH.... 
 
+Есть 2 машины
+
+Сервер, к которому подклчаемся
+Клиент, который подключается 
+
+На сервере надо указать открытый ключ в файле конкретного пользователя, которым (а не с которого на клиенте) мы будем подключаться
+
+Например, на клиенте мы под пользователем vasya, но подключаемся пользователем user1
+Значит на сервере должен быть user1, у него должна быть папка /home/user1/.ssh/authorized_keys
+В этом файле должен быть открытый ключ
+
+Проверить хэш сумму открытого ключа можно вот так. На сервере и на клиенте должны совпадать 
+
+Сервер
+```bash
+sudo ssh-keygen -l -f ~/.ssh/authorized_keys
+sudo ssh-keygen -l -f /home/borg/.ssh/authorized_keys
+```
+
+![images2](./images/borg_22.png)
+
+Клиент
+sudo ssh-keygen -l -f ~/.ssh/id_rsa.pub
+sudo ssh-keygen -l -f ~/.ssh/id_rsa
+
+![images2](./images/borg_23.png)
+
+И самое интересное, на чем я потерял еще пару вечеров
+ПОЛЬЗОТЕЛЬ ДОЛЖНЕ БЫТЬ АКТИВНЫЙ,
+ЕСЛИ СОЗДАВАТЬ ПОЛЬЗОВАТЕЛЯ БЕЗ ПАРОЛЯ, ПО ДЕФОЛТУ ОН ЗАБЛОЧЕН !!!!!!!!!!!
 
 
+Сначала пользователь был заблокирован
+
+![images2](./images/borg_24.png)
+
+Потом разблокировал его, но ключ не подходил
+
+![images2](./images/borg_25.png)
+
+Сначала пользователь был заблокирован
+
+**Полезное**
+На сервере можно проверить порт из конфига (при данной настройке все работатет)
+
+```bash
+grep Port /etc/ssh/sshd_config
+```
+![images2](./images/borg_26.png)
+
+ВОТ так с клиента проверить можно открытость и доступность порта
+
+```bash
+nmap 192.168.56.101 -PN -p ssh | egrep 'open|closed|filtered'
+```
+
+![images2](./images/borg_27.png)
 
 
+На клиенте может возникнуть вот такая проблема
 
+```bash
+WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED! 
+T IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ED25519 key sent by the remote host is![image](https://github.com/user-attachments/assets/10587783-2732-4aa9-a571-4271a9def2e6)
+```
+
+![images2](./images/borg_28.png)
+
+**Это значит**, что хост уже известен, но как бы под других хэшем, это проблема. 
+Обнулить его можно 
+
+```bash
+ssh-keygen -R 192.168.56.101 (это адрес сервера)
+```
+
+**Создание открытого и закрытого ключа**
+
+```bash
+ssh-keygen
+#Копировать из открытого ключа в файл с авторизованными ключами на сервере надо все из
+cat ~/.ssh/id_rsa.pub
+```
+
+![images2](./images/borg_29.png)
+
+
+___
+В общем, резюмируя
+1. Смотреть хэши ключей, что они совпадают. Особенно, работая с виртуалками
+2. Следить, от какого пользователя ключ создался и от какого идет подключение.
+3. Пользователь, которым подключаемся, должен быть активным!!!
+4. cron не всегда умеет в локальные переменные, поэтому надо объявлять их глобально
 
 
 
