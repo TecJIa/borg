@@ -29,6 +29,7 @@ VirtualBox версии 7.0.18
 
 Тестовый стенд:
 backup 192.168.56.101 Ubuntu 22.04
+
 client 192.168.56.103 Ubuntu 22.04
 
 ---
@@ -43,7 +44,7 @@ sudo fdisk /dev/sdb
 ``` 
 
 ![images2](./images/borg_2.png)
-![images2](./images/borg_4.png)
+![images2](./images/borg_3.png)
 
 **Создаем пользователя borg**
 
@@ -207,7 +208,7 @@ journalctl | grep borg
 ```
 
 ![images2](./images/borg_21.png)
-
+![images2](./images/borg_30.png)
 ___
 Неудачные дубли с Джеки Чаном
 
